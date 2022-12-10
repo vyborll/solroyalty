@@ -1,0 +1,7 @@
+{
+	"name": "solroyalty",
+	"private": true,
+	"workspaces": [
+		"api"
+	]
+}

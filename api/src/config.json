@@ -1,0 +1,12 @@
+{
+	"lamports-per-sol": 1000000000,
+	"schedulers": {
+		"collections-scheduler": { "enabled": true, "rule": "*/30 * * * *" },
+		"sales-scheduler": { "enabled": true, "rule": "*/2 * * * *" }
+	},
+	"workers": {
+		"collections-sync": { "enabled": true, "concurrency": 1 },
+		"sales-backfill-sync": { "enabled": true, "concurrency": 1 },
+		"sales-sync": { "enabled": true, "concurrency": 1 }
+	}
+}

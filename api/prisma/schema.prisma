@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Collection {
+  id               String   @id @default(uuid())
+  track            Boolean  @default(false)
+  backfilled       Boolean  @default(false)
+  symbol           String   @unique
+  name             String
+  update_authority String?
+  description      String?
+  image            String?
+  discord          String?
+  twitter          String?
+  website          String?
+  royalty_fee      Int?
+  tokens           Token[]
+  sales            Sale[]
+  updated_at       DateTime @updatedAt
+  created_at       DateTime @default(now())
+
+  @@map("collection")
+}
+
+model Token {
+  id                      String     @id @default(uuid())
+  mint                    String     @unique
+  name                    String
+  image                   String?
+  symbol                  String
+  collection              Collection @relation(fields: [symbol], references: [symbol])
+  collection_symbol       String
+  seller_fee_basis_points Int
+  uri                     String
+  sales                   Sale[]
+  updated_at              DateTime   @updatedAt
+  created_at              DateTime   @default(now())
+
+  @@map("token")
+}
+
+model Sale {
+  id          String      @id @default(uuid())
+  signature   String
+  mint        String
+  token       Token?      @relation(fields: [mint], references: [mint])
+  price       BigInt
+  sol         Float
+  market_fee  Float
+  royalty_fee Float
+  marketplace String
+  buyer       String
+  seller      String
+  time        DateTime
+  symbol      String
+  collection  Collection? @relation(fields: [symbol], references: [symbol])
+  updated_at  DateTime    @updatedAt
+  created_at  DateTime    @default(now())
+
+  @@unique([signature, mint])
+  @@map("sale")
+}
