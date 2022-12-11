@@ -28,7 +28,7 @@ async function main() {
 
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: false }));
-	app.use(cors({ origin: 'http://localhost:3000' }));
+	app.use(cors({ origin: process.env.ORIGIN_URL }));
 	app.use(routes);
 
 	server.listen(HTTP_PORT, () => {

@@ -17,7 +17,7 @@ const Overview = () => {
 			<div className="bg-dark-800 rounded border border-dark-700 p-4 space-y-1">
 				<h6 className="text-primary-100 uppercase font-semibold">{chartPeriod} Volume</h6>
 				<div className="flex flex-row items-center justify-between">
-					<span className="text-xl font-bold">{stats.volume.toLocaleString('en', { maximumFractionDigits: 3 })}</span>
+					<span className="text-xl font-bold">{stats.volume.toLocaleString('en', { maximumFractionDigits: 3 })} SOL</span>
 					<span className="text-sm text-green-300 font-semibold">${(stats.volume * solUsd).toLocaleString('en', { maximumFractionDigits: 2 })}</span>
 				</div>
 			</div>
