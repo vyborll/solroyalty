@@ -2,6 +2,15 @@
 	"name": "solroyalty",
 	"private": true,
 	"workspaces": [
-		"api"
-	]
+		"api",
+		"frontend"
+	],
+	"scripts": {
+		"dev": "yarn workspace run dev",
+		"build": "yarn workspace run build",
+		"api:start": "yarn workspace api start --production",
+		"api:dev": "yarn workspace api dev",
+		"frontend:start": "yarn workspace frontend start --production",
+		"frontend:dev": "yarn workspace frontend dev"
+	}
 }
