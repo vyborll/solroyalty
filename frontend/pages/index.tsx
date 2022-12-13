@@ -240,7 +240,12 @@ const SalesTable = () => {
 								</td>
 
 								<td className="whitespace-nowrap px-6 py-3">
-									<a href={`https://solscan.io/tx/${sale.signature}`} target="_blank" className="text-sm font-medium underline text-blue-300">
+									<a
+										href={`https://solscan.io/tx/${sale.signature}`}
+										target="_blank"
+										rel="noreferrer noopener"
+										className="text-sm font-medium underline text-blue-300"
+									>
 										View Tx
 									</a>
 									<p className="text-sm">{moment.utc(sale.time).fromNow()}</p>
