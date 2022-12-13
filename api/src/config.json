@@ -7,6 +7,7 @@
 	"workers": {
 		"collections-sync": { "enabled": true, "concurrency": 1 },
 		"sales-backfill-sync": { "enabled": true, "concurrency": 1 },
-		"sales-sync": { "enabled": true, "concurrency": 1 }
+		"sales-sync": { "enabled": true, "concurrency": 1 },
+		"tokens-sync": { "enabled": true, "concurrency": 1 }
 	}
 }

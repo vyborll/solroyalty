@@ -7,7 +7,8 @@
 		"dev": "ts-node-dev src/index.ts",
 		"start": "cross-env NODE_ENV=production node dist/index.js",
 		"build": "tsc --build",
-		"clean": "rimraf dist"
+		"clean": "rimraf dist",
+		"seed": "ts-node src/seed.ts"
 	},
 	"dependencies": {
 		"@bull-board/express": "^4.6.4",

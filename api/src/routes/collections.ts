@@ -8,6 +8,10 @@ import validate from '../utils/validate';
 
 const router = Router();
 
+const getCollectionStatsSchema = Joi.object({
+	symbol: Joi.string().required(),
+});
+
 const getCollectionOverviewSchema = Joi.object({
 	symbol: Joi.string().required(),
 	period: Joi.string().required(),
@@ -37,7 +41,8 @@ const collectionSelect = Prisma.validator<Prisma.CollectionSelect>()({
 });
 
 const saleSelect = Prisma.validator<Prisma.SaleSelect>()({
-	token: { select: { name: true } },
+	token: { select: { image: true, name: true } },
+	signature: true,
 	sol: true,
 	royalty_fee: true,
 	buyer: true,
@@ -59,6 +64,30 @@ router.get('/', async (req, res) => {
 		return res.status(200).json({ success: true, collections });
 	} catch (err) {
 		console.error('/collections', err);
+		return res.status(500).json({ success: false, message: 'Server Error' });
+	}
+});
+
+router.get('/stats', validate(getCollectionStatsSchema, 'query'), async (req, res) => {
+	const symbol = req.query.symbol as string;
+
+	try {
+		const collection = await prisma.sale.aggregate({
+			where: { symbol },
+			_sum: { sol: true, royalty_fee: true },
+			_count: { _all: true },
+		});
+
+		const paid = await prisma.sale.count({
+			where: { symbol, royalty_fee: { gt: 0 } },
+		});
+
+		return res.status(200).json({
+			success: true,
+			stats: { volume: collection._sum.sol, royalty_paid: collection._sum.royalty_fee, sales: collection._count._all, sales_paid: paid },
+		});
+	} catch (err) {
+		console.error(`/collections/stats - ${symbol}`, err);
 		return res.status(500).json({ success: false, message: 'Server Error' });
 	}
 });
@@ -222,6 +251,9 @@ const getTimePeriod = (period: string) => {
 			break;
 		case '7d':
 			start = { str: '7 days', iso: moment.utc().subtract(7, 'days').toISOString() };
+			break;
+		case '14d':
+			start = { str: '14 days', iso: moment.utc().subtract(14, 'days').toISOString() };
 			break;
 		default:
 			start = { str: '1 day', iso: moment.utc().subtract(1, 'day').toISOString() };

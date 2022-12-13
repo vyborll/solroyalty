@@ -8,6 +8,7 @@ import redis from '../../lib/redis';
 import prisma from '../../lib/prisma';
 import wait from '../../utils/wait';
 import CoralCube from '../../lib/coral-cube';
+import { addToQueue as addToTokenQueue } from '../tokens/tokens-sync';
 
 const LAMPORTS_PER_SOL = config['lamports-per-sol'];
 
@@ -104,6 +105,10 @@ if (config.workers['sales-sync'].enabled) {
 					}),
 					skipDuplicates: true,
 				});
+
+				for (const sale of sales) {
+					await addToTokenQueue({ mint: sale.mint, uri: sale.metadata.uri }, { jobId: sale.mint });
+				}
 
 				if (moment(sales[sales.length - 1].time).diff(moment(), 'days') > 14) {
 					await prisma.collection.update({

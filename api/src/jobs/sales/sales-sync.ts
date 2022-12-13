@@ -9,6 +9,7 @@ import redis from '../../lib/redis';
 import prisma from '../../lib/prisma';
 import CoralCube from '../../lib/coral-cube';
 import { addToQueue as addToBackfillQueue } from './sales-backfill-sync';
+import { addToQueue as addToTokenQueue } from '../tokens/tokens-sync';
 
 const LAMPORTS_PER_SOL = config['lamports-per-sol'];
 
@@ -86,6 +87,10 @@ if (config.workers['sales-sync'].enabled) {
 					data: { royalty_fee: sales[0].metadata.seller_fee_basis_points || undefined },
 				});
 
+				for (const sale of sales) {
+					await addToTokenQueue({ mint: sale.mint, uri: sale.metadata.uri }, { jobId: sale.mint });
+				}
+
 				if (!lastSale) {
 					hasNextPage = false;
 					break;
@@ -119,6 +124,6 @@ if (config.workers['sales-sync'].enabled) {
 	);
 }
 
-export const addToQueue = async (data: JobEvent, opts?: JobsOptions | undefined) => {
+export const addToQueue = async (data: JobEvent, opts?: JobsOptions) => {
 	await queue.add(randomUUID(), data, opts);
 };
