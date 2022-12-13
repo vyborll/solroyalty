@@ -11,6 +11,7 @@ import api from '@/utils/api';
 import Layout from '@/ui/Layout';
 import Collections from '@/ui/Dropdown/Collections';
 import Filter from '@/ui/Dropdown/Filter';
+import Stats from '@/ui/Stats';
 import Overview from '@/ui/Overview';
 import SalesChart from '@/ui/Charts/Sales';
 import MarketplacesChart from '@/ui/Charts/Marketplaces';
@@ -20,6 +21,7 @@ const Home: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
 	collections,
 	collection,
 	stats,
+	overview,
 	salesChart,
 	marketplacesChart,
 	sales,
@@ -34,8 +36,9 @@ const Home: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
 			collection,
 			salesChart,
 			marketplacesChart,
-			sales,
 			stats,
+			sales,
+			overview,
 		});
 
 		setPagination({ ...pagination });
@@ -95,6 +98,7 @@ const Home: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
 				</div>
 			)}
 
+			<Stats />
 			<Overview />
 
 			<div className="grid md:grid-cols-2 gap-0 md:gap-4 space-y-4 md:space-y-0">
@@ -175,6 +179,13 @@ const SalesTable = () => {
 								<td className="whitespace-nowrap px-6 py-3">
 									<div className="flex flex-row items-center space-x-4">
 										<div>
+											{sale.token.image ? (
+												<img className="bg-dark-800 h-10 w-10 rounded border border-dark-700" src={sale.token.image} />
+											) : (
+												<div className="bg-dark-800 h-10 w-10 rounded border border-dark-700" />
+											)}
+										</div>
+										<div>
 											<p className="text-sm font-semibold">{sale.token.name}</p>
 											<p className="text-sm text-primary-100">{sale.marketplace}</p>
 										</div>
@@ -222,13 +233,16 @@ const SalesTable = () => {
 										<span className="tooltip rounded text-center translate-x-[-40%] bg-dark-700 border border-dark-600 -mt-12 p-2 shadow-lg">
 											{sale.seller}
 										</span>
-										<p className="text-sm v">
+										<p className="text-sm font-semibold">
 											{sale.seller.slice(0, 6)}...{sale.seller.slice(-6)}
 										</p>
 									</div>
 								</td>
 
 								<td className="whitespace-nowrap px-6 py-3">
+									<a href={`https://solscan.io/tx/${sale.signature}`} target="_blank" className="text-sm font-medium underline text-blue-300">
+										View Tx
+									</a>
 									<p className="text-sm">{moment.utc(sale.time).fromNow()}</p>
 								</td>
 							</tr>
@@ -244,6 +258,7 @@ const SalesTable = () => {
 export const getServerSideProps = async () => {
 	const collections = await api.get('/collections');
 	const collection = collections.data.collections[0];
+	const stats = await api.get('/collections/stats', { params: { symbol: collection.symbol } });
 	const overview = await api.get('/collections/overview', { params: { symbol: collection.symbol, period: '7d' } });
 	const sales = await api.get('/collections/sales', { params: { symbol: collection.symbol, page: 1 } });
 
@@ -251,7 +266,8 @@ export const getServerSideProps = async () => {
 		props: {
 			collections: collections.data.collections,
 			collection,
-			stats: overview.data.stats,
+			stats: stats.data.stats,
+			overview: overview.data.stats,
 			salesChart: overview.data.sales,
 			marketplacesChart: overview.data.marketplaces,
 			sales: sales.data.sales,

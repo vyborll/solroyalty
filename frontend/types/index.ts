@@ -7,7 +7,7 @@ export interface CollectionStats {
 	discord: string;
 	twitter: string;
 	website: string;
-	stats: CollectionStat;
+	stats: CollectionOverview;
 }
 
 export interface Collection {
@@ -21,15 +21,23 @@ export interface Collection {
 	website: string;
 }
 
-export interface CollectionStat {
+export interface CollectionOverview {
 	sales: number;
 	volume: number;
 	unpaid: number;
 	paid: number;
 }
 
+export interface CollectionStat {
+	volume: number;
+	royalty_paid: number;
+	sales: number;
+	sales_paid: number;
+}
+
 export interface Sale {
-	token: { name: string };
+	token: { image: string | null; name: string };
+	signature: string;
 	sol: number;
 	royalty_fee: number;
 	buyer: string;

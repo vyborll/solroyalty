@@ -13,13 +13,15 @@ const Collections = () => {
 
 	const onChangeCollection = async (c: Collection) => {
 		const overview = await api.get('/collections/overview', { params: { symbol: c.symbol, period: chartPeriod } });
+		const stats = await api.get('/collections/stats', { params: { symbol: c.symbol } });
 		const sales = await api.get('/collections/sales', {
 			params: { symbol: c.symbol, page: 1, ...(paid === 'Paid' ? { paid: true } : paid === 'Unpaid' ? { paid: false } : undefined) },
 		});
 		setCollections({
 			collection: c,
 			buyer: '',
-			stats: overview.data.stats,
+			stats: stats.data.stats,
+			overview: overview.data.stats,
 			salesChart: overview.data.sales,
 			marketplacesChart: overview.data.marketplaces,
 			sales: sales.data.sales,

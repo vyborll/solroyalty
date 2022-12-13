@@ -24,7 +24,14 @@ const Sales = () => {
 		xAxis: {
 			type: 'datetime',
 			max: moment.utc().valueOf(),
-			tickInterval: chartPeriod === '1d' ? 1 * 3600 * 1000 : chartPeriod === '3d' ? 6 * 3600 * 1000 : 24 * 3600 * 1000,
+			tickInterval:
+				chartPeriod === '1d'
+					? 1 * 3600 * 1000
+					: chartPeriod === '3d'
+					? 6 * 3600 * 1000
+					: chartPeriod === '7d'
+					? 24 * 3600 * 1000
+					: 3 * 24 * 3600 * 1000,
 			lineColor: '#2b2b2b',
 			gridLineColor: '#2b2b2b',
 		},

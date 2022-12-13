@@ -13,7 +13,7 @@ const TimePeriod = () => {
 			const overview = await api.get('/collections/overview', { params: { symbol: collection?.symbol, period } });
 
 			setCollections({
-				stats: overview.data.stats,
+				overview: overview.data.stats,
 				salesChart: overview.data.sales,
 				marketplacesChart: overview.data.marketplaces,
 				chartPeriod: period,
